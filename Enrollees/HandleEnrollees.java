@@ -38,6 +38,7 @@ public class HandleEnrollees {
         splitEnrollee = line.split(splitBy);
 
         for (String column : splitEnrollee) {
+
           enrollee.add(column);
         }
 
@@ -56,12 +57,30 @@ public class HandleEnrollees {
       File fileCreated = createCSVFile(insurance);
 
       List<List<String>> specificDataSet = new ArrayList<>();
+      Set<String> uniqueIds = new HashSet<>();
       ArrayList<String> onlyNames = new ArrayList<>();
 
       for (List<String> dataSet : csvData) {
 
         if (dataSet.get(3).toLowerCase().equals(insurance)) {
-          specificDataSet.add(dataSet);
+          if (!uniqueIds.contains(dataSet.get(0))) {
+            uniqueIds.add(dataSet.get(0));
+            specificDataSet.add(dataSet);
+          } else if (uniqueIds.contains(dataSet.get(0))) {
+
+            System.out.println("VERSION: " + specificDataSet.get(0).get(2));
+
+            for (int i = 0; i < specificDataSet.size(); i++) {
+              if (specificDataSet.get(i).get(0).equals(dataSet.get(0))) {
+                int one = Integer.valueOf(specificDataSet.get(i).get(2).substring(1, 2));
+                int two = Integer.valueOf(dataSet.get(2).substring(1, 2));
+                if (one < two) {
+                  specificDataSet.remove(i);
+                  specificDataSet.add(dataSet);
+                }
+              }
+            }
+          }
         }
       }
 
@@ -157,24 +176,5 @@ public class HandleEnrollees {
     return csvFile;
 
   }
-
-  // public static void sortEnrollees(ArrayList playerList) {
-  // for (int i = 0; i < playerList.size(); i++) {
-  // for (int j = 0; j < playerList.size(); j++) {
-  // Collections.sort(playerList, new Comparator() {
-
-  // public int compare(Object o1, Object o2) {
-  // PlayerStats p1 = (PlayerStats) o1;
-  // PlayerStats p2 = (PlayerStats) o2;
-  // int res = p1.getPlayerLastName().compareToIgnoreCase(p2.getPlayerLastName());
-  // if (res != 0)
-  // return res;
-  // return p1.getPlayerFirstName().compareToIgnoreCase(p2.getPlayerFirstName())
-  // }
-  // });
-  // }
-
-  // }
-  // }
 
 }
