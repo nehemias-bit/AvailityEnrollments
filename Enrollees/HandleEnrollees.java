@@ -9,17 +9,13 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class HandleEnrollees {
 
-  // create treeset and add insurances to hashset
-  HashSet<String> insuranceSet = new HashSet<>();
-  // check list for insurances and create new file with corresponding list
-  // according to insurance
+  Set<String> insuranceSet = new HashSet<>();
 
   public HandleEnrollees() {
-
-    // List<String> csvData =
 
   }
 
@@ -41,17 +37,13 @@ public class HandleEnrollees {
 
         splitEnrollee = line.split(splitBy);
 
-        // System.out.println("splitEnrollee: " + Arrays.asList(splitEnrollee));
         for (String column : splitEnrollee) {
           enrollee.add(column);
         }
 
         insuranceSet.add(enrollee.get(3).toLowerCase());
 
-        // System.out.println("insuranceTree: " + insuranceSet);
         csvData.add(enrollee);
-        // System.out.println(csvData);
-
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -62,25 +54,41 @@ public class HandleEnrollees {
     for (String insurance : insuranceSet) {
 
       File fileCreated = createCSVFile(insurance);
-      // System.out.println(fileCreated);
+
+      List<List<String>> specificDataSet = new ArrayList<>();
+      ArrayList<String> onlyNames = new ArrayList<>();
 
       for (List<String> dataSet : csvData) {
-        // System.out.println("dataSet.get(3) " + dataSet.get(3) + " insurance " +
-        // insurance);
+
         if (dataSet.get(3).toLowerCase().equals(insurance)) {
+          specificDataSet.add(dataSet);
+        }
+      }
 
-          // System.out.println("calling writeCSVData with " + dataSet);
-          boolean isEmpty = isFileEmpty(fileCreated);
-          // System.out.println("is empty before write is called: " + isEmpty);
-          if (isEmpty) {
-            writeCSVData(fileCreated);
+      for (int i = 0; i < specificDataSet.size(); i++) {
+        onlyNames.add(specificDataSet.get(i).get(1));
+      }
+
+      SortEnrollee sortEnrollee = new SortEnrollee();
+
+      sortEnrollee.sortEnrollee(onlyNames);
+
+      boolean isEmpty = isFileEmpty(fileCreated);
+
+      if (isEmpty) {
+        writeCSVData(fileCreated);
+      }
+
+      for (String name : onlyNames) {
+        for (int i = 0; i < specificDataSet.size(); i++) {
+          if (specificDataSet.get(i).contains(name)) {
+            writeCSVData(specificDataSet.get(i), fileCreated);
           }
-
-          writeCSVData(dataSet, fileCreated);
         }
       }
 
     }
+
   }
 
   private boolean isFileEmpty(File fileCreated) {
@@ -111,18 +119,12 @@ public class HandleEnrollees {
         }
       }
 
-      // System.out.println(sb.toString());
-      System.out.println("calling writeCSVData with " + dataSet);
-
       boolean fileEmpty = isFileEmpty(fileCreated);
-      System.out.println("fileEmpty: " + fileEmpty);
       if (fileEmpty == false) {
         bw.append("\n");
-        System.out.println("new line");
       }
-      bw.append(sb.toString());
 
-      // System.out.println("done");
+      bw.append(sb.toString());
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -155,5 +157,24 @@ public class HandleEnrollees {
     return csvFile;
 
   }
+
+  // public static void sortEnrollees(ArrayList playerList) {
+  // for (int i = 0; i < playerList.size(); i++) {
+  // for (int j = 0; j < playerList.size(); j++) {
+  // Collections.sort(playerList, new Comparator() {
+
+  // public int compare(Object o1, Object o2) {
+  // PlayerStats p1 = (PlayerStats) o1;
+  // PlayerStats p2 = (PlayerStats) o2;
+  // int res = p1.getPlayerLastName().compareToIgnoreCase(p2.getPlayerLastName());
+  // if (res != 0)
+  // return res;
+  // return p1.getPlayerFirstName().compareToIgnoreCase(p2.getPlayerFirstName())
+  // }
+  // });
+  // }
+
+  // }
+  // }
 
 }
