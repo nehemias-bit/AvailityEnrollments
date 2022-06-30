@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+// This class simply helps us sort according to last name 
+// and first name ascending
+
 public class SortEnrollee {
 
   public SortEnrollee() {
